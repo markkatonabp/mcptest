@@ -1,10 +1,9 @@
-
 {
   "name": "bitbucket-mcp-server",
   "version": "1.0.0",
   "description": "Bitbucket MCP server for Onyx integration",
   "scripts": {
-    "start": "npx -y @aashari/mcp-server-atlassian-bitbucket"
+    "start": "npx -y @aashari/mcp-server-atlassian-bitbucket --http --port $PORT --host 0.0.0.0"
   },
   "engines": {
     "node": ">=18"
