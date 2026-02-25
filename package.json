@@ -1,9 +1,8 @@
 {
   "name": "bitbucket-mcp-server",
   "version": "1.0.0",
-  "description": "Bitbucket MCP server exposed via SSE for Onyx",
   "scripts": {
-    "start": "npx -y supergateway --stdio \"npx -y @aashari/mcp-server-atlassian-bitbucket\" --port ${PORT:-3001} --host 0.0.0.0"
+    "start": "npx -y @aashari/mcp-server-atlassian-bitbucket"
   },
   "engines": {
     "node": ">=18"
