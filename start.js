@@ -1,7 +1,41 @@
-const fs = require("fs");
+const { spawn } = require("child_process");
+const http = require("http");
+const httpProxy = require("http-proxy");
 const path = require("path");
 
-// First, find the correct binary name
-const binDir = path.join(__dirname, "node_modules", ".bin");
-const bins = fs.readdirSync(binDir);
-console.log("Available binaries:", bins.filter(f => f.includes("bitbucket") || f.includes("mcp") || f.includes("aashari")));
+const INTERNAL_PORT = 10000;
+const EXTERNAL_PORT = parseInt(process.env.PORT) || 3001;
+
+const bin = path.join(__dirname, "node_modules", ".bin", "mcp-atlassian-bitbucket");
+
+const child = spawn(bin, [], {
+  env: { ...process.env, TRANSPORT_MODE: "http", MCP_HTTP_PORT: String(INTERNAL_PORT) },
+  stdio: ["pipe", "pipe", "pipe"],
+});
+
+child.stderr.on("data", (d) => console.error("[mcp]", d.toString().trim()));
+child.stdout.on("data", (d) => console.log("[mcp]", d.toString().trim()));
+child.on("exit", (code) => {
+  console.error(`[mcp] exited with code ${code}`);
+  process.exit(1);
+});
+
+setTimeout(() => {
+  const proxy = httpProxy.createProxyServer({ target: `http://127.0.0.1:${INTERNAL_PORT}` });
+
+  const server = http.createServer((req, res) => {
+    proxy.web(req, res, {}, (err) => {
+      console.error("[proxy] error:", err.message);
+      res.writeHead(502);
+      res.end("MCP server not ready");
+    });
+  });
+
+  server.on("upgrade", (req, socket, head) => {
+    proxy.ws(req, socket, head);
+  });
+
+  server.listen(EXTERNAL_PORT, "0.0.0.0", () => {
+    console.log(`[proxy] Listening on 0.0.0.0:${EXTERNAL_PORT} -> 127.0.0.1:${INTERNAL_PORT}`);
+  });
+}, 5000);
