@@ -1,0 +1,12 @@
+
+{
+  "name": "bitbucket-mcp-server",
+  "version": "1.0.0",
+  "description": "Bitbucket MCP server for Onyx integration",
+  "scripts": {
+    "start": "npx -y @aashari/mcp-server-atlassian-bitbucket"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
