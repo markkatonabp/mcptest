@@ -6,7 +6,8 @@
     "start": "node start.js"
   },
   "dependencies": {
-    "http-proxy": "^1.18.1"
+    "http-proxy": "^1.18.1",
+    "@aashari/mcp-server-atlassian-bitbucket": "^3.1.0"
   },
   "engines": {
     "node": ">=18"
