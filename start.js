@@ -1,12 +1,15 @@
 const { spawn } = require("child_process");
 const http = require("http");
 const httpProxy = require("http-proxy");
+const path = require("path");
 
 const INTERNAL_PORT = 10000;
 const EXTERNAL_PORT = parseInt(process.env.PORT) || 3001;
 
-// Start the MCP server on localhost
-const child = spawn("npx", ["-y", "@aashari/mcp-server-atlassian-bitbucket"], {
+// Use the locally installed binary instead of npx
+const bin = path.join(__dirname, "node_modules", ".bin", "mcp-atlassian-bitbucket");
+
+const child = spawn(bin, [], {
   env: { ...process.env, TRANSPORT_MODE: "http", MCP_HTTP_PORT: String(INTERNAL_PORT) },
   stdio: ["pipe", "pipe", "pipe"],
 });
@@ -30,7 +33,6 @@ setTimeout(() => {
     });
   });
 
-  // Handle SSE / upgrade connections
   server.on("upgrade", (req, socket, head) => {
     proxy.ws(req, socket, head);
   });
