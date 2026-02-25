@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-// List all available binaries so we find the right name
+// First, find the correct binary name
 const binDir = path.join(__dirname, "node_modules", ".bin");
-console.log("Available binaries:", fs.readdirSync(binDir).filter(f => f.includes("bitbucket") || f.includes("mcp") || f.includes("aashari")));
-console.log("All binaries:", fs.readdirSync(binDir));
+const bins = fs.readdirSync(binDir);
+console.log("Available binaries:", bins.filter(f => f.includes("bitbucket") || f.includes("mcp") || f.includes("aashari")));
